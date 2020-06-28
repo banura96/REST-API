@@ -7,10 +7,21 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dishRouter =require('./routes/dishRouter');
-var promoRouter =require('./routes/promoRouter')
-var leaderRouter = require('./routes/leaderRouter')
+var promoRouter =require('./routes/promoRouter');
+var leaderRouter = require('./routes/leaderRouter');
+var favoriteRouter = require('./routes/favoriteRouter');
 
 var app = express();
+
+// Secure traffic only
+// app.all('*', (req, res, next) => {
+//   if (req.secure) {
+//     return next();
+//   }
+//   else {
+//     res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+//   }
+// });
 
 var passport = require('passport');
 var authenticate = require('./authenticate');
@@ -37,6 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/dishes',dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders',leaderRouter);
+app.use('/favorites',favoriteRouter)
 
 const mongoose =require('mongoose');
 
@@ -44,7 +56,7 @@ const mongoose =require('mongoose');
  const url = config.mongoUrl;
 
 // const url = 'mongodb://localhost:27017/conFusion';
-const connect = mongoose.connect(url);
+const connect = mongoose.connect(url, { useNewUrlParser: true,useUnifiedTopology: true });
 
 connect.then((db) => {
     console.log("Connected correctly to server");
